@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { useSpring, animated } from 'react-spring'
 
 const SvgStyles = styled.svg`
-  position: fixed;
+  position: absolute;
   ${props => `${props.align[0]}: ${props.position[0]}px;`}
   ${props => `${props.align[1]}: ${props.position[1]}px;`}
 `;
@@ -15,12 +15,14 @@ const Circle = ({ radius, fill, position, align }) => {
     </SvgStyles>
 )};
 
-export default ({ divider = 2, scroll, radius = 50, fill = "#ccc", position = [100,100], align = ['left', 'top'] }) => {
-  const [styles, set] = useSpring(() => ({ transform: 'translate3d(0, 0px, 0)', config: { mass: 1, friction: 4, tension: 40 } }));
+export default ({ depth = 2, scroll, radius = 50, fill = "#FCEBF1", position = [100,100], align = ['left', 'top'] }) => {
+
+  // todo: circles that are further 'back' should not move as much? -- the movement should be more proportional
+  const [styles, set] = useSpring(() => ({ position: 'absolute', width: radius, height: radius, zIndex: -1, transform: 'translate3d(0, 500px, 0)', config: { mass: 1.2, friction: 5, tension: 30 } }));
 
   useEffect(() => {
     if (!scroll) return;
-    set({ transform: `translate3d(0, ${Math.abs(scroll / divider) || 0}px, 0)` });
+    set({ transform: `translate3d(0, ${scroll * (depth / 4) + 500 || 0}px, 0)` });
   }, [scroll]);
 
   return (
